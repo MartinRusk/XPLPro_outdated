@@ -52,7 +52,7 @@ void xpUpdate(int handle)
 void setup() { 
   // setup interface
   Serial.begin(XPLDIRECT_BAUDRATE);
-  XP.begin("Sample");
+  XP.begin("Sample", &xpInit(), &xpStop(), &xpUpdate());
 
   // Connect MUX adress pins to Pin 22-25 (SimVim Pins)
   DigitalIn.setMux(22, 23, 24, 25);

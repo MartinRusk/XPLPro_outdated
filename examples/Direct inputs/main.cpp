@@ -54,7 +54,7 @@ void xpUpdate(int handle)
 void setup() { 
   // setup interface
   Serial.begin(XPLDIRECT_BAUDRATE);
-  XP.begin("Sample");
+  XP.begin("Sample", &xpInit(), &xpStop(), &xpUpdate());
 }
 
 // Arduino loop function, called cyclic

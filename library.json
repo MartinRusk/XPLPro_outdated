@@ -1,6 +1,6 @@
 {
     "name": "XPLPro",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "Easy-to-start toolbox to create flight simulation devices based on the XPLPro driver by CuriosityWorkshop",
     "keywords": "xplane, flighsim, arduino",
     "authors": [
