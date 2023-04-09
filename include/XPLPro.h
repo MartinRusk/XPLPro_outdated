@@ -65,7 +65,7 @@
 
 // Parameters around the interface
 #define XPL_BAUDRATE 115200   // Baudrate needed to match plugin
-#define XPL_RX_TIMEOUT 500    // Time of for reception of one frame
+#define XPL_RX_TIMEOUT 500    // Timeout for reception of one frame
 #define XPL_PACKETHEADER '['  // Frame start character
 #define XPL_PACKETTRAILER ']' // Frame end character
 #define XPL_HANDLE_INVALID -1 // invalif handle
@@ -182,16 +182,16 @@ public:
   void setScaling(int handle, int inLow, int inHigh, int outLow, int outHigh);
 
   /// @brief Register a DataRef and obtain a handle
-  /// @param datarefName Name of the DataRef (ov abbreviation)
+  /// @param datarefName Name of the DataRef (or abbreviation)
   /// @return Assigned handle for the DataRef, -1 if DataRef was not found
   int registerDataRef(XPString_t *datarefName);
 
   /// @brief Register a Command and obtain a handle
-  /// @param commandName Name of the Command (ov abbreviation)
+  /// @param commandName Name of the Command (or abbreviation)
   /// @return Assigned handle for the Command, -1 if Command was not found
   int registerCommand(XPString_t *commandName);
 
-  /// @brief Read the received Float DataRef
+  /// @brief Read the received float DataRef
   /// @return Received value
   long datarefReadFloat() { return _readValueFloat; }
 
@@ -199,7 +199,7 @@ public:
   /// @return Received value
   long datarefReadInt() { return _readValueLong; }
 
-  /// @brief Read the received Array Element
+  /// @brief Read the received array element
   /// @return Received array element
   long datarefReadElement() { return _readValueElement; }
 

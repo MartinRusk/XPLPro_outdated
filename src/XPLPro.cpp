@@ -40,7 +40,7 @@ int XPLPro::commandTrigger(int commandHandle, int triggerCount)
   {
     return -1;
   }
-  sprintf(_sendBuffer, "%c%c,%i,%i,%c", XPL_PACKETHEADER, XPLCMD_COMMANDTRIGGER, commandHandle, triggerCount, XPL_PACKETTRAILER);
+  sprintf(_sendBuffer, "%c%c,%i,%i%c", XPL_PACKETHEADER, XPLCMD_COMMANDTRIGGER, commandHandle, triggerCount, XPL_PACKETTRAILER);
   _transmitPacket();
   return 0;
 }
