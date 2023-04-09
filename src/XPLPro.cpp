@@ -2,15 +2,17 @@
 // Created by Curiosity Workshop, Michael Gerlicher, 2023.
 #include "XPLPro.h"
 
-XPLPro::XPLPro()
+XPLPro::XPLPro(Stream *device)
 {
-  _streamPtr = &Serial;
+  _streamPtr = device;
   _streamPtr->setTimeout(XPL_RX_TIMEOUT);
 }
 
 void XPLPro::begin(const char *devicename, void (*initFunction)(void), void (*stopFunction)(void), void (*inboundHandler)(int))
 {
+#ifndef XPL_STANDALONE
   Serial.begin(XPL_BAUDRATE);
+#endif
   _deviceName = (char *)devicename;
   _connectionStatus = 0;
   _receiveBuffer[0] = 0;
@@ -34,11 +36,12 @@ int XPLPro::xloop(void)
   return _connectionStatus;
 }
 
+// TODO: is a return value necessary? These could also be void like for the datarefs
 int XPLPro::commandTrigger(int commandHandle, int triggerCount)
 {
   if (commandHandle < 0)
   {
-    return -1;
+    return XPL_HANDLE_INVALID;
   }
   sprintf(_sendBuffer, "%c%c,%i,%i%c", XPL_PACKETHEADER, XPLCMD_COMMANDTRIGGER, commandHandle, triggerCount, XPL_PACKETTRAILER);
   _transmitPacket();
@@ -49,7 +52,7 @@ int XPLPro::commandStart(int commandHandle)
 {
   if (commandHandle < 0)
   {
-    return -1;
+    return XPL_HANDLE_INVALID;
   }
   _sendPacketVoid(XPLCMD_COMMANDSTART, commandHandle);
   return 0;
@@ -59,7 +62,7 @@ int XPLPro::commandEnd(int commandHandle)
 {
   if (commandHandle < 0)
   {
-    return -1;
+    return XPL_HANDLE_INVALID;
   }
   _sendPacketVoid(XPLCMD_COMMANDEND, commandHandle);
   return 0;
@@ -435,9 +438,10 @@ int XPLPro::registerDataRef(XPString_t *datarefName)
 {
   long int startTime;
 
+  // registration only allowed in callback (TODO: is this limitation really necessary?)
   if (!_registerFlag)
   {
-    return -1;
+    return XPL_HANDLE_INVALID;
   }
 #if XPL_USE_PROGMEM
   sprintf(_sendBuffer, "%c%c,\"%S\"%c", XPL_PACKETHEADER, XPLREQUEST_REGISTERDATAREF, (wchar_t *)datarefName, XPL_PACKETTRAILER);
@@ -446,7 +450,7 @@ int XPLPro::registerDataRef(XPString_t *datarefName)
 #endif
   _transmitPacket();
 
-  _handleAssignment = -1;
+  _handleAssignment = XPL_HANDLE_INVALID;
   startTime = millis(); // for timeout function
 
   while (millis() - startTime < XPL_RESPONSE_TIMEOUT && _handleAssignment < 0)
@@ -464,7 +468,7 @@ int XPLPro::registerCommand(XPString_t *commandName)
   sprintf(_sendBuffer, "%c%c,\"%s\"%c", XPL_PACKETHEADER, XPLREQUEST_REGISTERCOMMAND, (char *)commandName, XPL_PACKETTRAILER);
 #endif
   _transmitPacket();
-  _handleAssignment = -1;
+  _handleAssignment = XPL_HANDLE_INVALID;
   while (millis() - startTime < XPL_RESPONSE_TIMEOUT && _handleAssignment < 0)
   {
     _processSerial();
@@ -515,4 +519,6 @@ void XPLPro::setScaling(int handle, int inLow, int inHigh, int outLow, int outHi
   _transmitPacket();
 }
 
-XPLPro XP;
+#ifndef XPL_STANDALONE
+XPLPro XP(&Serial);
+#endif

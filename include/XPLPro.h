@@ -68,7 +68,7 @@
 #define XPL_RX_TIMEOUT 500    // Timeout for reception of one frame
 #define XPL_PACKETHEADER '['  // Frame start character
 #define XPL_PACKETTRAILER ']' // Frame end character
-#define XPL_HANDLE_INVALID -1 // invalif handle
+#define XPL_HANDLE_INVALID -1 // invalid handle
 
 // Items in caps generally come from XPlane. Items in lower case are generally sent from the arduino.
 #define XPLCMD_SENDNAME 'N'                // plugin request name from arduino
@@ -99,7 +99,8 @@ class XPLPro
 {
 public:
   /// @brief Constructor
-  XPLPro();
+  /// @param device Device to use (should be &Serial)
+  XPLPro(Stream *device);
 
   /// @brief Register device and set callback functions
   /// @param devicename Device name
@@ -193,7 +194,7 @@ public:
 
   /// @brief Read the received float DataRef
   /// @return Received value
-  long datarefReadFloat() { return _readValueFloat; }
+  float datarefReadFloat() { return _readValueFloat; }
 
   /// @brief Read the received integer DataRef
   /// @return Received value
@@ -201,7 +202,7 @@ public:
 
   /// @brief Read the received array element
   /// @return Received array element
-  long datarefReadElement() { return _readValueElement; }
+  int datarefReadElement() { return _readValueElement; }
 
   /// @brief Send a debug message to the plugin
   /// @param msg Message to show as debug string
@@ -251,6 +252,7 @@ private:
   int _readValueElement;
 };
 
+#ifndef XPLPRO_STANDALONE
 /// @brief The global instance to use
 extern XPLPro XP;
 
@@ -263,5 +265,6 @@ extern XPLPro XP;
 #include <LedShift.h>
 #include <Timer.h>
 #include <AnalogIn.h>
+#endif
 
 #endif
