@@ -65,7 +65,7 @@ void AnalogIn::setRange(uint16_t min, uint16_t max)
   {
     _min = 0;
     _max = FULL_SCALE;
-  } 
+  }
   if (_type == unipolar)
   {
     _offset = _min;

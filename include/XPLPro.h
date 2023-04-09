@@ -11,7 +11,7 @@
 #include <Arduino.h>
 
 //////////////////////////////////////////////////////////////
-// Parameters which can be overridden by command line defines
+// Parameters that can be overwritten by command line defines
 //////////////////////////////////////////////////////////////
 
 // Decimals of precision for floating point datarefs. More increases dataflow (default 4)
@@ -74,7 +74,7 @@
 #define XPLCMD_SENDNAME 'N'                // plugin request name from arduino
 #define XPLRESPONSE_NAME 'n'               // Arduino responds with device name as initialized in the "begin" function
 #define XPLCMD_SENDREQUEST 'Q'             // plugin sends this when it is ready to register bindings
-#define XPLREQUEST_REGISTERDATAREF 'b'     // Register a DataRef
+#define XPLREQUEST_REGISTERDATAREF 'b'     // Register a dataref
 #define XPLREQUEST_REGISTERCOMMAND 'm'     // Register a command
 #define XPLRESPONSE_DATAREF 'D'            // Plugin responds with handle to dataref or - value if not found.  dataref handle, dataref name
 #define XPLRESPONSE_COMMAND 'C'            // Plugin responds with handle to command or - value if not found.  command handle, command name
@@ -86,9 +86,9 @@
 #define XPLREQUEST_SCALING 'u'             // arduino requests the plugin apply scaling to the dataref values
 #define XPLCMD_RESET 'z'                   // Request a reset and reregistration from the plugin
 #define XPLCMD_DATAREFUPDATEINT '1'        // Int DataRef update
-#define XPLCMD_DATAREFUPDATEFLOAT '2'      //  Float DataRef update
+#define XPLCMD_DATAREFUPDATEFLOAT '2'      // Float DataRef update
 #define XPLCMD_DATAREFUPDATEINTARRAY '3'   // Int array DataRef update
-#define XPLCMD_DATAREFUPDATEFLOATARRAY '4' // Float array DataRaéf Update
+#define XPLCMD_DATAREFUPDATEFLOATARRAY '4' // Float array DataRef Update
 #define XPLCMD_DATAREFUPDATESTRING '9'     // String DataRef update
 #define XPLCMD_COMMANDTRIGGER 'k'          // Trigger command n times
 #define XPLCMD_COMMANDSTART 'i'            // Begin command (Button pressed)
@@ -127,7 +127,7 @@ public:
   /// @brief Start a command. All commandStart must be balanced with a commandEnd
   /// @param commandHandle Handle of the command to start
   /// @return 0: OK, -1: command was not registered
-  int commandStart(int commandHandle);                     
+  int commandStart(int commandHandle);
   
   /// @brief End a command. All commandStart must be balanced with a commandEnd
   /// @param commandHandle Handle of the command to start
