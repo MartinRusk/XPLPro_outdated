@@ -1,18 +1,16 @@
-/*
-  XPLPro.cpp
-  Created by Curiosity Workshop, Michael Gerlicher, 2023.
-*/
-#include <arduino.h>
+// XPLPro.cpp
+// Created by Curiosity Workshop, Michael Gerlicher, 2023.
 #include "XPLPro.h"
 
-XPLPro::XPLPro(Stream *device)
+XPLPro::XPLPro()
 {
-  streamPtr = device;
-  streamPtr->setTimeout(XPL_RX_TIMEOUT);
+  _streamPtr = &Serial;
+  _streamPtr->setTimeout(XPL_RX_TIMEOUT);
 }
 
 void XPLPro::begin(const char *devicename, void (*initFunction)(void), void (*stopFunction)(void), void (*inboundHandler)(int))
 {
+  Serial.begin(XPL_BAUDRATE);
   _deviceName = (char *)devicename;
   _connectionStatus = 0;
   _receiveBuffer[0] = 0;
@@ -26,7 +24,7 @@ int XPLPro::xloop(void)
 {
   // handle incoming serial data
   _processSerial();
-  // when device is registered, perform registrations
+  // when device is registered, perform handle registrations
   if (_registerFlag)
   {
     _xplInitFunction();
@@ -34,11 +32,6 @@ int XPLPro::xloop(void)
   }
   // return status of connection
   return _connectionStatus;
-}
-
-int XPLPro::commandTrigger(int commandHandle)
-{
-  return commandTrigger(commandHandle, 1);
 }
 
 int XPLPro::commandTrigger(int commandHandle, int triggerCount)
@@ -111,7 +104,7 @@ void XPLPro::datarefWrite(int handle, int value, int arrayElement)
   _transmitPacket();
 }
 
-void XPLPro::datarefWrite(int handle, long int value)
+void XPLPro::datarefWrite(int handle, long value)
 {
   if (handle < 0)
   {
@@ -121,7 +114,7 @@ void XPLPro::datarefWrite(int handle, long int value)
   _transmitPacket();
 }
 
-void XPLPro::datarefWrite(int handle, long int value, int arrayElement)
+void XPLPro::datarefWrite(int handle, long value, int arrayElement)
 {
   if (handle < 0)
   {
@@ -187,9 +180,9 @@ void XPLPro::sendResetRequest()
 void XPLPro::_processSerial()
 {
   // read until package header found or buffer empty
-  while (streamPtr->available() && _receiveBuffer[0] != XPL_PACKETHEADER)
+  while (_streamPtr->available() && _receiveBuffer[0] != XPL_PACKETHEADER)
   {
-    _receiveBuffer[0] = (char)streamPtr->read();
+    _receiveBuffer[0] = (char)_streamPtr->read();
   }
   // return when buffer empty and header not found
   if (_receiveBuffer[0] != XPL_PACKETHEADER)
@@ -197,7 +190,7 @@ void XPLPro::_processSerial()
     return;
   }
   // read rest of package until trailer
-  _receiveBufferBytesReceived = streamPtr->readBytesUntil(XPL_PACKETTRAILER, (char *)&_receiveBuffer[1], XPLMAX_PACKETSIZE - 1);
+  _receiveBufferBytesReceived = _streamPtr->readBytesUntil(XPL_PACKETTRAILER, (char *)&_receiveBuffer[1], XPLMAX_PACKETSIZE_RECEIVE - 1);
   // if no further chars available, delete package
   if (_receiveBufferBytesReceived == 0)
   {
@@ -286,7 +279,7 @@ void XPLPro::_processPacket()
     _xplInboundHandler(tHandle);
     break;
 
-  // this goes the other diretion??
+  // obsolete?
   case XPLREQUEST_REFRESH:
     break;
 
@@ -316,11 +309,11 @@ void XPLPro::_sendPacketString(int command, const char *str) // for a string
 
 void XPLPro::_transmitPacket(void)
 {
-  streamPtr->write(_sendBuffer);
+  _streamPtr->write(_sendBuffer);
   if (strlen(_sendBuffer) == 64)
   {
-    // apparantly a bug in arduino with some boards when we transmit exactly 64 bytes. That took a while to track down...
-    streamPtr->print(" "); 
+    // apparently a bug in arduino with some boards when we transmit exactly 64 bytes. That took a while to track down...
+    _streamPtr->print(" "); 
   }
 }
 
@@ -390,7 +383,7 @@ int XPLPro::_parseInt(int *outTarget, char *inBuffer, int parameter)
   return 0;
 }
 
-int XPLPro::_parseInt(long int *outTarget, char *inBuffer, int parameter)
+int XPLPro::_parseInt(long *outTarget, char *inBuffer, int parameter)
 {
   int cBeg;
   int pos = 0;
@@ -443,9 +436,14 @@ int XPLPro::registerDataRef(XPString_t *datarefName)
   long int startTime;
 
   if (!_registerFlag)
+  {
     return -1;
-
+  }
+#if XPL_USE_PROGMEM
   sprintf(_sendBuffer, "%c%c,\"%S\"%c", XPL_PACKETHEADER, XPLREQUEST_REGISTERDATAREF, (wchar_t *)datarefName, XPL_PACKETTRAILER);
+#else
+  sprintf(_sendBuffer, "%c%c,\"%s\"%c", XPL_PACKETHEADER, XPLREQUEST_REGISTERDATAREF, (char *)datarefName, XPL_PACKETTRAILER);
+#endif
   _transmitPacket();
 
   _handleAssignment = -1;
@@ -460,7 +458,11 @@ int XPLPro::registerDataRef(XPString_t *datarefName)
 int XPLPro::registerCommand(XPString_t *commandName)
 {
   long int startTime = millis(); // for timeout function
+#if XPL_USE_PROGMEM
   sprintf(_sendBuffer, "%c%c,\"%S\"%c", XPL_PACKETHEADER, XPLREQUEST_REGISTERCOMMAND, (wchar_t *)commandName, XPL_PACKETTRAILER);
+#else
+  sprintf(_sendBuffer, "%c%c,\"%s\"%c", XPL_PACKETHEADER, XPLREQUEST_REGISTERCOMMAND, (char *)commandName, XPL_PACKETTRAILER);
+#endif
   _transmitPacket();
   _handleAssignment = -1;
   while (millis() - startTime < XPL_RESPONSE_TIMEOUT && _handleAssignment < 0)
@@ -513,4 +515,4 @@ void XPLPro::setScaling(int handle, int inLow, int inHigh, int outLow, int outHi
   _transmitPacket();
 }
 
-XPLPro XP(&Serial);
+XPLPro XP;

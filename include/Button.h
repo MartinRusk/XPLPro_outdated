@@ -1,7 +1,7 @@
 #ifndef Button_h
 #define Button_h
 #include <Arduino.h>
-#include <DigitalIn.h>
+#include <XPLPro.h>
 
 /// @brief Class for a simple pushbutton with debouncing and XPLDirect command handling.
 /// Supports start and end of commands so XPlane can show the current Button status.

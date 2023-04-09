@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "Timer.h"
 
 Timer::Timer(float cycle)

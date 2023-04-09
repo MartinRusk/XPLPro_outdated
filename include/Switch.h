@@ -1,7 +1,7 @@
 #ifndef Switch_h
 #define Switch_h
 #include <Arduino.h>
-#include <DigitalIn.h>
+#include <XPLPro.h>
 
 /// @brief Class for a simple on/off switch with debouncing and XPLDirect command handling.
 class Switch

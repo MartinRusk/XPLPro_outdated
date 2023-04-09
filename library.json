@@ -1,6 +1,6 @@
 {
   "name": "XPLPro",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Easy-to-start toolbox to create flight simulation devices based on the XPLPro driver by CuriosityWorkshop",
   "keywords": "xplane, flighsim, arduino",
   "authors": [
@@ -8,10 +8,13 @@
       "name": "Martin Ruskowski",
       "email": "martin@ruskowski.de",
       "maintainer": true
+    },
+    {
+      "name": "Michael Gerlicher"
     }
   ],
   "license": "GPL-3.0-or-later",
-  "homepage": "https://github.com/MartinRusk/XPLDevices",
+  "homepage": "https://github.com/MartinRusk/XPLPro",
   "dependencies": {
     "adafruit/Adafruit MCP23017 Arduino Library": "^2.3.0",
     "adafruit/Adafruit BusIO": "^1.14.1"

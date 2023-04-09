@@ -1,7 +1,7 @@
 #ifndef Encoder_h
 #define Encoder_h
 #include <Arduino.h>
-#include <DigitalIn.h>
+#include <XPLPro.h>
 
 enum EncCmd_t
 {
