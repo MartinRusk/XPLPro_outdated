@@ -1,5 +1,3 @@
-#include <Arduino.h>
-#include <XPLPro.h>
 #include "Switch.h"
 
 #ifndef DEBOUNCE_DELAY

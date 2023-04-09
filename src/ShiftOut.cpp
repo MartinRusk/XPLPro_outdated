@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "ShiftOut.h"
 
 ShiftOut::ShiftOut(uint8_t pin_DAI, uint8_t pin_DCK, uint8_t pin_LAT, uint8_t pins)

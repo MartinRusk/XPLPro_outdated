@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "DigitalIn.h"
 
 #define MCP_PIN 254

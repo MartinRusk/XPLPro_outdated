@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "LedShift.h"
 
 #define BLINK_DELAY 150

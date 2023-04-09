@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "AnalogIn.h"
 
 #define FULL_SCALE ((1 << AD_RES) - 1)

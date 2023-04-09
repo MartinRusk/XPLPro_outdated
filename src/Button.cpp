@@ -1,5 +1,3 @@
-#include <Arduino.h>
-#include <XPLPro.h>
 #include "Button.h"
 
 #ifndef DEBOUNCE_DELAY
