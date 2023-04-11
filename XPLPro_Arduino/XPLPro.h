@@ -95,6 +95,19 @@ typedef const char XPString_t;
 #define XPLCMD_COMMANDEND 'j'              // End command (Button released)
 #define XPL_EXITING 'X'                    // XPlane sends this to the arduino device during normal shutdown of XPlane. It may not happen if xplane crashes.
 
+class DataRef_t
+{
+public:
+    float valueFloat() { return _floatValue; };
+    long valueInt() { return _intValue; };
+    int index(){return _arrayElement};
+
+private:
+    float _floatValue;
+    long _intValue;
+    int _arrayElement;
+}
+
 /// @brief Core class for the XPLPro Arduino library
 class XPLPro
 {
